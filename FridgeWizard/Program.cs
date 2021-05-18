@@ -32,28 +32,7 @@ namespace FridgeWizard
             return result.results;
         }
 
-        //This prints the instructions and creates a query object later used to create the api url string
-        private static UserQuery MakeRequest()
-        {
-            // Print instructions
-            Console.WriteLine("Provide all the stuff you got in a comma-separated list, and we'll see if we can't make magic happen.");
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("for example: onions, tomato, eggs, butter, spinach");
-            Console.ResetColor();
-
-            // Grab ingredients
-            string userIngredients = Console.ReadLine();
-            userIngredients = userIngredients.Replace(' ', '+');
-
-            // Grab search term
-            Console.WriteLine("Want to try for a specific keyword? You skip this by pressing enter.");
-            string userTerm = Console.ReadLine();
-            userTerm = userTerm.Replace(' ', '+');
-
-            var query = new UserQuery(userIngredients, userTerm);
-
-            return query;
-        }
+        
 
         private static void PrintRecipeMenu(Result[] recipes, int index, int page)
         {
@@ -90,7 +69,8 @@ namespace FridgeWizard
             Console.WriteLine("Uh oh, not able to get out to the grocery store today?\nThink you can't make anything to eat?\nThink again!");
 
             //Get user input, we save it as an object here for later searches that increment pages
-            var query = MakeRequest();
+            var query = new UserQuery();
+            query.MakeQuery();
 
             // Make api call with provided input
             var recipes = await ProcessRequest(query.userIngredients, query.userTerm, 1);
@@ -155,7 +135,7 @@ namespace FridgeWizard
                         break;
                     case ConsoleKey.R:
                         Console.Clear();
-                        query = MakeRequest();
+                        query.MakeQuery();
                         recipes = await ProcessRequest(query.userIngredients, query.userTerm, 1);
                         Console.Clear();
                         index = 0;
